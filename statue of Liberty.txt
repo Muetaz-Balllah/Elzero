@@ -1,0 +1,107 @@
+//---------------------------------------------------------------------------
+
+#include <fmx.h>
+#include <queue>
+#pragma hdrstop
+
+#include "Unit1.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.fmx"
+class Question{
+ public:
+	char* Text ;
+	char* answer1 ;
+	char* answer2 ;
+	char* answer3 ;
+	int CorrectAnswer ;
+
+	Question(){}
+	Question(char* t, char* A1 ,char* A2 ,char* A3,int CA)
+	{
+	  Text = t ;
+	  answer1 = A1 ;
+	  answer2 = A2 ;
+	  answer3 = A3 ;
+	  CorrectAnswer = CA ;
+	}
+};
+
+std::queue<Question>LoadQuestions()
+ {
+	Question q1 = Question("Which color does not appear on the Olympic rings?","Green","Orange","black",2);
+	Question q2 = Question("what is the chemical formult for table Salt?","Nacl","Nacl2","Na2cl",3);
+	Question q3 = Question("What is the learges River in the would","Nile","Mississippi","Amzoen",1);
+
+	std::queue<Question>questions ;
+	questions.push(q1);
+	questions.push(q2);
+	questions.push(q3);
+    return questions ;
+ }
+ std::queue<Question> questions ;
+ Question currentQuestion ;
+ int SelectedAnswer ;
+ int Points = 0 ;
+
+TForm1 *Form1;
+//---------------------------------------------------------------------------
+__fastcall TForm1::TForm1(TComponent* Owner)
+	: TForm(Owner)
+{
+	questions = LoadQuestions() ;
+	currentQuestion = questions.front();
+
+	QuestionLabel->Text = currentQuestion.Text;
+	RBAnswer1->Text = currentQuestion.answer1;
+	RBAnswer2->Text = currentQuestion.answer2;
+	RBAnswer3->Text = currentQuestion.answer3;
+
+	questions.pop();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::RBAnswer1Change(TObject *Sender)
+{
+	SelectedAnswer = 1 ;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::RBAnswer2Change(TObject *Sender)
+{
+	SelectedAnswer = 2 ;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::RBAnswer3Change(TObject *Sender)
+{
+	SelectedAnswer = 3 ;
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::SelectButtonClick(TObject *Sender)
+{
+	if(SelectedAnswer==currentQuestion.CorrectAnswer) {
+	  Points++;
+	  NumberLabel->Text=Points;
+   }
+
+   if(!questions.empty()){
+	  currentQuestion=questions.front();
+
+	  QuestionLabel->Text= currentQuestion.Text;
+	  RBAnswer1->Text= currentQuestion.answer1;
+	  RBAnswer2->Text= currentQuestion.answer2;
+	  RBAnswer3->Text= currentQuestion.answer3;
+
+	  questions.pop();
+
+	  RBAnswer1->IsChecked=false;
+	  RBAnswer2->IsChecked=false;
+	  RBAnswer3->IsChecked=false;
+   }
+
+
+}
+//---------------------------------------------------------------------------
+
